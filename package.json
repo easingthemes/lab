@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel src -d public",
+    "build:b": "babel src -d public",
+    "build": "webpack",
     "serve": "http-server ./public --ssl"
   },
   "repository": {
@@ -22,6 +23,8 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0"
+    "@babel/core": "^7.6.0",
+    "webpack": "^4.40.2",
+    "webpack-cli": "^3.3.9"
   }
 }
