@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/easingthemes/lab/issues"
   },
-  "homepage": "https://lab.frontenddot.com/public",
+  "homepage": "https://lab.frontenddot.com/public/index.html",
   "devDependencies": {
     "@babel/cli": "^7.6.0",
     "@babel/core": "^7.6.0",
