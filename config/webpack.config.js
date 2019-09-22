@@ -7,7 +7,7 @@ module.exports = {
     entry: `${ROOT_PATH}/src/app.js`,
     output: {
         filename: 'js/app.min.js',
-        path: path.resolve(ROOT_PATH, 'public')
+        path: path.resolve(ROOT_PATH, 'sw')
     },
     module: {
         rules: [

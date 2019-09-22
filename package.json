@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config ./config/webpack.config.js",
-    "serve": "http-server ./public --ssl"
+    "serve": "http-server --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/easingthemes/lab/issues"
   },
-  "homepage": "https://lab.frontenddot.com/public/index.html",
+  "homepage": "https://lab.frontenddot.com/sw",
   "devDependencies": {
     "@babel/cli": "^7.6.0",
     "@babel/core": "^7.6.0",
