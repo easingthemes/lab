@@ -4,7 +4,7 @@ export function register() {
         navigator.serviceWorker
              .register(swUrl)
              .then(registration => {
-                 console.error('Service worker registration successful: ', registration.scope);
+                 console.log('Service worker registration successful: ', registration.scope);
 
                  registration.onupdatefound = () => {
                      const installingWorker = registration.installing;
