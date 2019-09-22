@@ -16,10 +16,7 @@
   "bugs": {
     "url": "https://github.com/easingthemes/lab/issues"
   },
-  "homepage": "https://github.com/easingthemes/lab#readme",
-  "dependencies": {
-    "http-server": "^0.11.1"
-  },
+  "homepage": "https://lab.frontenddot.com/public",
   "devDependencies": {
     "@babel/cli": "^7.6.0",
     "@babel/core": "^7.6.0",
@@ -28,6 +25,7 @@
     "babel-loader": "^8.0.6",
     "webpack": "^4.40.2",
     "webpack-cli": "^3.3.9",
-    "workbox-webpack-plugin": "^4.3.1"
+    "workbox-webpack-plugin": "^4.3.1",
+    "http-server": "^0.11.1"
   }
 }
