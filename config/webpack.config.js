@@ -6,8 +6,8 @@ module.exports = {
     mode: 'production',
     entry: `${ROOT_PATH}/src/app.js`,
     output: {
-        filename: 'app.min.js',
-        path: path.resolve(ROOT_PATH, 'public/js')
+        filename: 'js/app.min.js',
+        path: path.resolve(ROOT_PATH, 'public')
     },
     module: {
         rules: [
