@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:b": "babel src -d public",
-    "build": "webpack",
+    "build": "webpack --config ./config/webpack.config.js",
     "serve": "http-server ./public --ssl"
   },
   "repository": {
@@ -24,7 +23,11 @@
   "devDependencies": {
     "@babel/cli": "^7.6.0",
     "@babel/core": "^7.6.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/preset-env": "^7.6.0",
+    "babel-loader": "^8.0.6",
     "webpack": "^4.40.2",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.9",
+    "workbox-webpack-plugin": "^4.3.1"
   }
 }

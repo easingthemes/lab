@@ -1,5 +1,9 @@
-import { registerSw } from './serviceWorker';
+import serviceWorker from './serviceWorker';
 
 console.log('app');
 
-registerSw();
+window.addEventListener('load', () => {
+    if (process.env.NODE_ENV === 'production') {
+        serviceWorker.register();
+    }
+});
