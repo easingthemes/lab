@@ -31,7 +31,7 @@ if (!defined('TARGET_DIR_PARAM')) define('TARGET_DIR_PARAM', 'target');
 $token = $_GET[TOKEN_PARAM];
 $repo = $_GET[REPO_PARAM];
 $targetDirParam = isset($_GET[TARGET_DIR_PARAM]) ? $_GET[TARGET_DIR_PARAM] : TARGET_DIR_DEFAULT);
-$rawTarget = rawurldecode(targetDirParam);
+$targetDir = rawurldecode(targetDirParam);
 $isNotValid = !isset($token) || $token !== SECRET_ACCESS_TOKEN || $token == 'PleaseChangeMe' || !isset($repo) || !filter_var($repo, FILTER_VALIDATE_URL) || !is_dir($targetDir);
 
 // If there's authorization error, set the correct HTTP header.
