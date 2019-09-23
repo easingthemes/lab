@@ -24,6 +24,7 @@ if (!defined('TIME_LIMIT')) define('TIME_LIMIT', 30);
 if (!defined('TOKEN_PARAM')) define('TOKEN_PARAM', 'token');
 if (!defined('REPO_PARAM')) define('REPO_PARAM', 'repo');
 if (!defined('TARGET_DIR_PARAM')) define('TARGET_DIR_PARAM', 'target');
+if (!defined('TMP_DIR')) define('TMP_DIR', '/tmp/svn-'.md5(REPO_PARAM).'/');
 
 // ===========================================[ Configuration end ]===
 
@@ -69,7 +70,7 @@ Running as <b><?php echo trim(shell_exec('whoami')); ?></b>.
 
 	<?php
 // Check if the required programs are available
-$requiredBinaries = array('svn');
+$requiredBinaries = array('svn', 'rsync');
 
 foreach ($requiredBinaries as $command) {
 	$path = trim(shell_exec('which '.$command));
@@ -101,7 +102,15 @@ $commands = array();
 $commands[] = sprintf(
 	'svn export %s %s --force'
 	, $repo
+	, TMP_DIR
+);
+
+// Sync downloaded repo and Traget dir
+$commands[] = sprintf(
+	'rsync -rltgoDzvO %s %s %s %s'
+	, TMP_DIR
 	, $targetDir
+	, '--delete-after'
 );
 
 // =======================================[ Run the command ]===
