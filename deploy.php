@@ -31,8 +31,8 @@ if (!defined('TMP_DIR')) define('TMP_DIR', '/tmp/svn-'.md5(REPO_PARAM).'/');
 // ===========================================[ Get params ]===
 $token = $_GET[TOKEN_PARAM];
 $repo = $_GET[REPO_PARAM];
-$targetDirParam = isset($_GET[TARGET_DIR_PARAM]) ? $_GET[TARGET_DIR_PARAM] : TARGET_DIR_DEFAULT);
-$targetDir = rawurldecode(targetDirParam);
+$targetDirParam = isset($_GET[TARGET_DIR_PARAM]) ? $_GET[TARGET_DIR_PARAM] : TARGET_DIR_DEFAULT;
+$targetDir = rawurldecode($targetDirParam);
 $isNotValid = !isset($token) || $token !== SECRET_ACCESS_TOKEN || $token == 'PleaseChangeMe' || !isset($repo) || !filter_var($repo, FILTER_VALIDATE_URL) || !is_dir($targetDir);
 
 // If there's authorization error, set the correct HTTP header.
@@ -107,10 +107,10 @@ $commands[] = sprintf(
 
 // Sync downloaded repo and Traget dir
 $commands[] = sprintf(
-	'rsync -rltgoDzvO %s %s %s %s'
+	'rsync -rltgoDzvO %s %s %s'
 	, TMP_DIR
 	, $targetDir
-	, '--delete-after'
+	, '--remove-source-files'
 );
 
 // =======================================[ Run the command ]===

@@ -5,18 +5,19 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config ./config/webpack.config.js",
-    "serve": "http-server --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem"
+    "serve": "http-server --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem",
+    "deploy": "node ./config/deploy.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/easingthemes/lab.git"
+    "url": "https://github.com/easingthemes/lab.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/easingthemes/lab/issues"
   },
-  "homepage": "https://lab.frontenddot.com/sw",
+  "homepage": "https://lab.frontenddot.com",
   "devDependencies": {
     "@babel/cli": "^7.6.0",
     "@babel/core": "^7.6.0",
