@@ -8,5 +8,7 @@ const config = {
 
 module.exports = {
     ROOT_PATH: path.resolve(__dirname, config.ROOT_REL),
-    PUBLIC_URL: envPublicUrl || pkg.homepage
+    PUBLIC_URL: envPublicUrl || pkg.homepage,
+    REPO_URL: pkg.repository.url,
+    DIST_DIR: 'dist'
 };

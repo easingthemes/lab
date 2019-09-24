@@ -1,13 +1,13 @@
 const path = require('path');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const { ROOT_PATH, PUBLIC_URL } = require('./app.config');
+const { ROOT_PATH, PUBLIC_URL, DIST_DIR } = require('./app.config');
 
 module.exports = {
     mode: 'production',
     entry: `${ROOT_PATH}/src/app.js`,
     output: {
         filename: 'js/app.min.js',
-        path: path.resolve(ROOT_PATH, 'sw')
+        path: path.resolve(ROOT_PATH, DIST_DIR)
     },
     module: {
         rules: [

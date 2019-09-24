@@ -1,13 +1,9 @@
 const https = require('https');
-const pkg = require('../package.json');
+const { REPO_URL, PUBLIC_URL, DIST_DIR } = require('./app.config');
 
-const { TOKEN } = process.NODE_ENV;
-const home = pkg.homepage;
-const git = pkg.repository.url;
-const trunk = git.replace('.git', '/trunk/');
-const url = home + 'deploy.php?token=' + TOKEN + '&repo=' + trunk + 'sw';
-
-
+const { TOKEN, URL } = process.env;
+const trunk = REPO_URL.replace('.git', '/trunk/');
+const url = PUBLIC_URL + '/' + URL + '?token=' + TOKEN + '&repo=' + trunk + DIST_DIR;
 
 https.get(url, (resp) => {
     let data = '';
