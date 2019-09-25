@@ -23,10 +23,10 @@ jobs:
     - name: Run build task
       run: |
         npm run build --if-present
-    - name: Run deploy task
-      run: |
-        npm run deploy --if-present
-      env:
-        CI: true,
-        DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
-        DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+    - name: Deploy to Staging server
+        uses: easingthemes/ssh-deploy@v1.0.0
+        env:
+          DEPLOY_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "dist"
+          TARGET: ${{ secrets.SERVER_STAGING }}
