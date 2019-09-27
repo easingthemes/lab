@@ -1,25 +1,46 @@
-const https = require('https');
-const { REPO_URL, PUBLIC_URL, DIST_DIR } = require('./app.config');
+const fs = require('fs');
+const path = require('path');
+const Rsync = require('rsync');
 
-const { DEPLOY_TOKEN, DEPLOY_URL, GITHUB_WORKSPACE } = process.env;
-const url = PUBLIC_URL + '/' + DEPLOY_URL + '?token=' + DEPLOY_TOKEN + '&repo=' + REPO_URL + '/trunk/' + DIST_DIR;
-
+const { DEPLOY_KEY, ARGS, SOURCE, TARGET, GITHUB_WORKSPACE, HOME } = process.env;
 console.log('GITHUB_WORKSPACE', GITHUB_WORKSPACE);
 
-https.get(url, (resp) => {
-    console.log('statusCode:', resp.statusCode);
-    console.log('headers:', resp.headers);
+const validateDir = (dir) => {
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+};
 
-    let data = '';
+const addSshKey = (key, name) => {
+    const sshDir = path.join(HOME, '.ssh');
+    const filePath = path.join(sshDir, name);
 
-    resp.on('data', (chunk) => {
-        data += chunk;
+    validateDir(sshDir);
+
+    fs.writeFileSync(filePath, {
+        encoding: 'utf8',
+        mode: '0o600'
     });
 
-    resp.on('end', () => {
-        console.log(data);
-    });
+    return filePath;
+};
 
-}).on("error", (err) => {
-    console.log("Error: " + err.message);
-});
+const configureRsync = (sshKeyPath) => {
+    return new Rsync()
+        .shell('ssh')
+        .flags(ARGS || 'rltgoDzvO')
+        .set('e', `ssh -i ${sshKeyPath} -o StrictHostKeyChecking=no`)
+        .source(GITHUB_WORKSPACE + '/' + SOURCE)
+        .destination(TARGET);
+};
+
+const run = () => {
+    const sshKeyPath = addSshKey(DEPLOY_KEY, 'deployKey');
+    const rsync = configureRsync(sshKeyPath);
+
+    rsync.execute((error, code, cmd) => {
+        console.log('done', code, error, cmd);
+    });
+};
+
+run();
