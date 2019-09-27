@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const Rsync = require('rsync');
+const rsync = require('rsyncwrapper');
 
-const { DEPLOY_KEY, ARGS, SOURCE, TARGET, GITHUB_WORKSPACE, HOME } = process.env;
+const { DEPLOY_KEY, DEPLOY_KEY_NAME, ARGS, SOURCE, TARGET, GITHUB_WORKSPACE, HOME } = process.env;
 console.log('GITHUB_WORKSPACE', GITHUB_WORKSPACE);
 
 const validateDir = (dir) => {
@@ -30,23 +30,28 @@ const addSshKey = (key, name) => {
     return filePath;
 };
 
-const configureRsync = (sshKeyPath) => {
-    return new Rsync()
-        .shell('ssh')
-        .flags(ARGS || 'rltgoDzvO')
-        .set('e', `ssh -i ${sshKeyPath} -o StrictHostKeyChecking=no`)
-        .source(GITHUB_WORKSPACE + '/' + SOURCE)
-        .destination(TARGET);
+const runRsync = (sshKeyPath) => {
+    rsync({ src: GITHUB_WORKSPACE + '/' + SOURCE,
+        dest: TARGET,
+        args: ARGS || 'rltgoDzvO',
+        ssh: true,
+        privateKey: sshKeyPath,
+        recursive: true,
+    }, (error, stdout, stderr, cmd) => {
+        console.log('end', stderr, cmd);
+        if (error) {
+            // failed
+            console.log(error.message);
+            throw error;
+        } else {
+            console.log('success', stdout);
+        }
+    });
 };
 
 const run = () => {
-    const sshKeyPath = addSshKey(DEPLOY_KEY, 'deployKey');
-    const rsync = configureRsync(sshKeyPath);
-    console.log('Rsync command: ', rsync.command());
-
-    rsync.execute((error, code, cmd) => {
-        console.log('done', code, error, cmd);
-    });
+    const sshKeyPath = addSshKey(DEPLOY_KEY, DEPLOY_KEY_NAME ||'deployKey.pem');
+    runRsync(sshKeyPath);
 };
 
 run();

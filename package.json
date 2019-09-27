@@ -26,10 +26,9 @@
     "babel-loader": "^8.0.6",
     "webpack": "^4.40.2",
     "webpack-cli": "^3.3.9",
-    "workbox-webpack-plugin": "^4.3.1",
-    "http-server": "^0.11.1"
+    "workbox-webpack-plugin": "^4.3.1"
   },
   "dependencies": {
-    "rsync": "^0.6.1"
+    "rsyncwrapper": "^3.0.1"
   }
 }
