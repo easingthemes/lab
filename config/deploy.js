@@ -7,8 +7,11 @@ console.log('GITHUB_WORKSPACE', GITHUB_WORKSPACE);
 
 const validateDir = (dir) => {
     if (!fs.existsSync(dir)){
+        console.log('Creating `.ssh` dir in ', GITHUB_WORKSPACE);
         fs.mkdirSync(dir);
     }
+
+    console.log('`.ssh` dir exist');
 };
 
 const addSshKey = (key, name) => {
@@ -21,6 +24,8 @@ const addSshKey = (key, name) => {
         encoding: 'utf8',
         mode: '0o600'
     });
+
+    console.log('Ssh key added to `.ssh` dir ', filePath);
 
     return filePath;
 };
@@ -37,6 +42,7 @@ const configureRsync = (sshKeyPath) => {
 const run = () => {
     const sshKeyPath = addSshKey(DEPLOY_KEY, 'deployKey');
     const rsync = configureRsync(sshKeyPath);
+    console.log('Rsync command: ', rsync.command());
 
     rsync.execute((error, code, cmd) => {
         console.log('done', code, error, cmd);
