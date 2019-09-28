@@ -16,12 +16,8 @@ jobs:
     - name: Check Node version
       run: echo "##[set-output name=version;]$(node --version)"
       id: 'node_version'
-    - name: Check condition
-      run: echo  "${{ contains(steps.node_version.outputs.version, '10.')}}"
-    - name: Check condition2
-      run: echo ${{steps.node_version.outputs.version}}
     - name: Use Node.js 10.x
-      if: contains(steps.node_version.outputs.version, '10.')
+      if: !contains(steps.node_version.outputs.version, '10.')
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
