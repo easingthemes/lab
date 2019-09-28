@@ -1,43 +1,43 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const nodeSsh = require('node-ssh');
+// const nodeSsh = require('node-ssh');
 const nodeRsync = require('rsyncwrapper');
 
 const { REMOTE_HOST, REMOTE_USER, SSH_PRIVATE_KEY, DEPLOY_KEY_NAME, SOURCE, TARGET, ARGS, GITHUB_WORKSPACE, HOME } = process.env;
 console.log('GITHUB_WORKSPACE', GITHUB_WORKSPACE);
 
 const sshDeploy = (() => {
-    const connect = async ({
-        host = "localhost",
-        username,
-        privateKey,
-        port = 22,
-        password,
-        passphrase
-    }) => {
-        const ssh = new nodeSsh();
-        console.log(`Establishing a SSH connection to ${host}.`);
-
-        try {
-            await ssh.connect({
-                host,
-                username,
-                privateKey,
-                port,
-                password,
-                passphrase
-            });
-            console.log(`🤝 Connected to ${host}.`);
-        } catch (err) {
-            console.error(`⚠️ The GitHub Action couldn't connect to ${host}.`, err);
-            process.abort();
-        }
-
-        console.log('ssh end');
-
-        return ssh;
-    };
+    // const connect = async ({
+    //     host = "localhost",
+    //     username,
+    //     privateKey,
+    //     port = 22,
+    //     password,
+    //     passphrase
+    // }) => {
+    //     const ssh = new nodeSsh();
+    //     console.log(`Establishing a SSH connection to ${host}.`);
+    //
+    //     try {
+    //         await ssh.connect({
+    //             host,
+    //             username,
+    //             privateKey,
+    //             port,
+    //             password,
+    //             passphrase
+    //         });
+    //         console.log(`🤝 Connected to ${host}.`);
+    //     } catch (err) {
+    //         console.error(`⚠️ The GitHub Action couldn't connect to ${host}.`, err);
+    //         process.abort();
+    //     }
+    //
+    //     console.log('ssh end');
+    //
+    //     return ssh;
+    // };
 
     const rsync = async ({ ssh, privateKey, src, dest, args }) => {
         console.log(`Starting Rsync Action: ${src} to ${dest}`);
@@ -49,16 +49,16 @@ const sshDeploy = (() => {
                 if (error) {
                     // failed
                     console.error('Rsync error', error.message);
-                    ssh.dispose();
+                    //ssh.dispose();
                     process.abort();
                 } else {
-                    ssh.dispose();
+                    //ssh.dispose();
                     console.log("✅ Rsync Action finished.", stdout);
                 }
             });
         } catch (err) {
             console.error(`⚠️ An error happened:(.`, err.message, err.stack);
-            ssh.dispose();
+            //ssh.dispose();
             process.abort();
         }
     };
@@ -77,20 +77,20 @@ const sshDeploy = (() => {
 
         const privateKey = addSshKey(privateKeyContent, DEPLOY_KEY_NAME ||'deploy_key');
 
-        const ssh = await connect({
-            host,
-            username,
-            privateKey,
-            port,
-            password,
-            passphrase
-        });
+        // const ssh = await connect({
+        //     host,
+        //     username,
+        //     privateKey,
+        //     port,
+        //     password,
+        //     passphrase
+        // });
 
         const remoteDest = username + '@' + host + ':' + dest;
 
-        await rsync({ ssh, privateKey, src, dest: remoteDest, args });
+        await rsync({ ssh: null, privateKey, src, dest: remoteDest, args });
 
-        ssh.dispose();
+        //ssh.dispose();
     };
 
     const validateDir = (dir) => {
