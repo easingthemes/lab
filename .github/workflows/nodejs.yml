@@ -9,10 +9,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Check OS
-      run: |
-        node --version
-        rsync --version
     - name: Check Node version
       run: echo "##[set-output name=version;]$(node --version)"
       id: 'node_version'
