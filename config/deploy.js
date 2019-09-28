@@ -47,7 +47,8 @@ const sshDeploy = (() => {
                 if (error) {
                     // failed
                     console.log('Rsync error', error.message);
-                    throw error;
+                    ssh.dispose();
+                    process.abort();
                 } else {
                     console.log('Rsync successful', stdout);
                 }
@@ -116,7 +117,8 @@ const sshDeploy = (() => {
                     mode: 0o600
                 });
             } catch (e) {
-                throw e;
+                console.error('writeFileSync error', filePath, e.message);
+                process.abort();
             }
         } else {
             console.log(`${filePath} file exist`);
@@ -136,7 +138,8 @@ const sshDeploy = (() => {
                 mode: 0o600
             });
         } catch (e) {
-            throw e;
+            console.error('writeFileSync error', filePath, e.message);
+            process.abort();
         }
 
         console.log('Ssh key added to `.ssh` dir ', filePath);
@@ -151,7 +154,8 @@ const sshDeploy = (() => {
 
 const run = () => {
     if (!SSH_PRIVATE_KEY) {
-        throw new Error('SSH_PRIVATE_KEY is mandatory');
+        console.error('SSH_PRIVATE_KEY is mandatory');
+        process.abort();
     }
 
     sshDeploy.init({
