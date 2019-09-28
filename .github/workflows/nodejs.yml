@@ -17,7 +17,7 @@ jobs:
       run: echo "##[set-output name=version;]$(node --version)"
       id: 'node_version'
     - name: Check condition
-      run: echo  contains(steps.node_version.outputs.version, '10.')
+      run: echo  "${{ contains(steps.node_version.outputs.version, '10.')}}"
     - name: Check condition2
       run: echo ${{steps.node_version.outputs.version}}
     - name: Use Node.js 10.x
