@@ -15,7 +15,7 @@ const validateDir = (dir) => {
 };
 
 const addSshKey = (key, name) => {
-    const sshDir = path.join(HOME, '.ssh');
+    const sshDir = path.join(HOME || __dirname, '.ssh');
     const filePath = path.join(sshDir, name);
 
     validateDir(sshDir);
@@ -31,9 +31,9 @@ const addSshKey = (key, name) => {
 };
 
 const runRsync = (sshKeyPath) => {
-    rsync({ src: GITHUB_WORKSPACE + '/' + SOURCE,
-        dest: TARGET,
-        args: ARGS || 'rltgoDzvO',
+    rsync({ src: GITHUB_WORKSPACE || '.' + '/' + SOURCE || '' ,
+        dest: TARGET || './dest',
+        args: ARGS || ['rltgoDzvO'],
         ssh: true,
         privateKey: sshKeyPath,
         recursive: true,
@@ -50,6 +50,10 @@ const runRsync = (sshKeyPath) => {
 };
 
 const run = () => {
+    if (!DEPLOY_KEY) {
+        throw new Error('DEPLOY_KEY is mandatory');
+    }
+
     const sshKeyPath = addSshKey(DEPLOY_KEY, DEPLOY_KEY_NAME ||'deployKey.pem');
     runRsync(sshKeyPath);
 };
