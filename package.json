@@ -28,5 +28,9 @@
     "webpack-cli": "^3.3.9",
     "workbox-webpack-plugin": "^4.3.1",
     "rsyncwrapper": "^3.0.1"
+  },
+  "dependencies": {
+    "command-exists": "^1.2.8",
+    "node-cmd": "^3.0.0"
   }
 }

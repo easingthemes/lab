@@ -1,24 +1,25 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
+const commandExists = require('command-exists');
+const nodeCmd = require('node-cmd');
 const nodeRsync = require('rsyncwrapper');
 
 const { REMOTE_HOST, REMOTE_USER, SSH_PRIVATE_KEY, DEPLOY_KEY_NAME, SOURCE, TARGET, ARGS, GITHUB_WORKSPACE, HOME } = process.env;
 console.log('GITHUB_WORKSPACE', GITHUB_WORKSPACE);
 
 const sshDeploy = (() => {
-    const rsync = async ({ privateKey, src, dest, args }) => {
+    const rsync = ({ privateKey, src, dest, args }) => {
         console.log(`Starting Rsync Action: ${src} to ${dest}`);
 
         try {
             // RSYNC COMMAND
             nodeRsync({ src, dest, args, privateKey, ssh: true, sshCmdArgs: ['-o StrictHostKeyChecking=no'], recursive: true }, (error, stdout, stderr, cmd) => {
-                console.log('Rsync end', stderr, cmd);
                 if (error) {
                     console.error('⚠️ Rsync error', error.message);
                     process.abort();
                 } else {
-                    console.log("✅ Rsync Action finished.", stdout);
+                    console.log("✅ Rsync finished.", stdout);
                 }
             });
         } catch (err) {
@@ -27,7 +28,7 @@ const sshDeploy = (() => {
         }
     };
 
-    const init = async ({
+    const init = ({
         src,
         dest,
         args,
@@ -35,12 +36,13 @@ const sshDeploy = (() => {
         username,
         privateKeyContent
     }) => {
+        validateRsync(() => {
+            const privateKey = addSshKey(privateKeyContent, DEPLOY_KEY_NAME ||'deploy_key');
 
-        const privateKey = addSshKey(privateKeyContent, DEPLOY_KEY_NAME ||'deploy_key');
+            const remoteDest = username + '@' + host + ':' + dest;
 
-        const remoteDest = username + '@' + host + ':' + dest;
-
-        await rsync({ privateKey, src, dest: remoteDest, args });
+            rsync({ privateKey, src, dest: remoteDest, args });
+        });
     };
 
     const validateDir = (dir) => {
@@ -89,6 +91,25 @@ const sshDeploy = (() => {
         console.log('✅ Ssh key added to `.ssh` dir ', filePath);
 
         return filePath;
+    };
+
+    const validateRsync = (callback = () => {}) => {
+        const rsyncCli = commandExists.sync('rsync');
+
+        if (!rsyncCli) {
+            nodeCmd.get(
+                'sudo apt-get --no-install-recommends install rsync',
+                function(err, data, stderr){
+                    if (err) {
+                        console.log('⚠️ Rsync installation failed ', err.message);
+                        process.abort();
+                    } else {
+                        console.log('✅ Rsync installed. \n', data, stderr);
+                        callback();
+                    }
+                }
+            );
+        }
     };
 
     return {

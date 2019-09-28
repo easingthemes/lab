@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install rsync
-      run: sudo apt-get --no-install-recommends install rsync
+      run: rsync --version
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
