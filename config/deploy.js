@@ -99,6 +99,12 @@ const sshDeploy = (() => {
         } else {
             console.log(`${dir} dir exist`);
         }
+
+        console.log('Dir content start ----------- ');
+        fs.readdirSync(dir).forEach(file => {
+            console.log(file);
+        });
+        console.log('Dir content end ------------- ');
     };
 
     const validateFile = (filePath) => {
