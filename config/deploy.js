@@ -101,11 +101,24 @@ const sshDeploy = (() => {
         }
     };
 
+    const validateFile = (filePath) => {
+        if (!fs.existsSync(filePath)){
+            console.log(`Creating ${filePath} file in `, GITHUB_WORKSPACE);
+            fs.writeFileSync(filePath, '', {
+                encoding: 'utf8',
+                mode: '0o600'
+            });
+        } else {
+            console.log(`${filePath} file exist`);
+        }
+    };
+
     const addSshKey = (key, name) => {
         const sshDir = path.join(HOME || __dirname, '.ssh');
         const filePath = path.join(sshDir, name);
 
         validateDir(sshDir);
+        validateFile(sshDir + '/known_hosts');
 
         fs.writeFileSync(filePath, key, {
             encoding: 'utf8',
