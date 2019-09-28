@@ -48,16 +48,14 @@ const sshDeploy = (() => {
                 console.log('Rsync end', stderr, cmd);
                 if (error) {
                     // failed
-                    console.log('Rsync error', error.message);
+                    console.error('Rsync error', error.message);
                     ssh.dispose();
                     process.abort();
                 } else {
-                    console.log('Rsync successful', stdout);
+                    ssh.dispose();
+                    console.log("✅ Rsync Action finished.", stdout);
                 }
             });
-
-            ssh.dispose();
-            console.log("✅ Rsync Action finished.");
         } catch (err) {
             console.error(`⚠️ An error happened:(.`, err.message, err.stack);
             ssh.dispose();
