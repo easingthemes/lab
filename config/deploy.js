@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
 const nodeSsh = require('node-ssh');
 const nodeRsync = require('rsyncwrapper');
 
-const { REMOTE_HOST, REMOTE_USER, DEPLOY_KEY, SOURCE, TARGET, ARGS, GITHUB_WORKSPACE, HOME } = process.env;
+const { REMOTE_HOST, REMOTE_USER, SSH_PRIVATE_KEY, DEPLOY_KEY_NAME, SOURCE, TARGET, ARGS, GITHUB_WORKSPACE, HOME } = process.env;
 console.log('GITHUB_WORKSPACE', GITHUB_WORKSPACE);
 
 const sshDeploy = (() => {
@@ -35,12 +37,12 @@ const sshDeploy = (() => {
         return ssh;
     };
 
-    const rsync = async ({ ssh, src, dest, args }) => {
+    const rsync = async ({ ssh, privateKey, src, dest, args }) => {
         console.log(`Starting Rsync Action: ${src} to ${dest}`);
 
         try {
             // RSYNC COMMAND
-            nodeRsync({ src, dest, args, ssh: true, recursive: true }, (error, stdout, stderr, cmd) => {
+            nodeRsync({ src, dest, args, privateKey, ssh: true, recursive: true }, (error, stdout, stderr, cmd) => {
                 console.log('Rsync end', stderr, cmd);
                 if (error) {
                     // failed
@@ -66,11 +68,14 @@ const sshDeploy = (() => {
         args,
         host = 'localhost',
         username,
-        privateKey,
+        privateKeyContent,
         port = 22,
         password,
         passphrase
     }) => {
+
+        const privateKey = addSshKey(privateKeyContent, DEPLOY_KEY_NAME ||'deploy_key');
+
         const ssh = await connect({
             host,
             username,
@@ -82,9 +87,34 @@ const sshDeploy = (() => {
 
         const remoteDest = username + '@' + host + ':' + dest;
 
-        await rsync({ ssh, src, dest: remoteDest, args });
+        await rsync({ ssh, privateKey, src, dest: remoteDest, args });
 
         ssh.dispose();
+    };
+
+    const validateDir = (dir) => {
+        if (!fs.existsSync(dir)){
+            console.log(`Creating ${dir} dir in `, GITHUB_WORKSPACE);
+            fs.mkdirSync(dir);
+        } else {
+            console.log(`${dir} dir exist`);
+        }
+    };
+
+    const addSshKey = (key, name) => {
+        const sshDir = path.join(HOME || __dirname, '.ssh');
+        const filePath = path.join(sshDir, name);
+
+        validateDir(sshDir);
+
+        fs.writeFileSync(filePath, key, {
+            encoding: 'utf8',
+            mode: '0o600'
+        });
+
+        console.log('Ssh key added to `.ssh` dir ', filePath);
+
+        return filePath;
     };
 
     return {
@@ -92,11 +122,21 @@ const sshDeploy = (() => {
     }
 })();
 
-sshDeploy.init({
-    src: GITHUB_WORKSPACE + '/' + SOURCE || '',
-    dest: TARGET || './dest',
-    args: [ARGS] || ['-rltgoDzvO'],
-    host: REMOTE_HOST,
-    username: REMOTE_USER,
-    privateKey: DEPLOY_KEY,
-});
+const run = () => {
+    if (!SSH_PRIVATE_KEY) {
+        throw new Error('SSH_PRIVATE_KEY is mandatory');
+    }
+
+    sshDeploy.init({
+        src: GITHUB_WORKSPACE + '/' + SOURCE || '',
+        dest: TARGET || './dest',
+        args: [ARGS] || ['-rltgoDzvO'],
+        host: REMOTE_HOST,
+        username: REMOTE_USER,
+        privateKeyContent: SSH_PRIVATE_KEY,
+    });
+};
+
+run();
+
+
