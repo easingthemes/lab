@@ -34,6 +34,8 @@ const sshDeploy = (() => {
             process.abort();
         }
 
+        console.log('ssh end');
+
         return ssh;
     };
 
