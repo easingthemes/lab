@@ -33,7 +33,7 @@ const addSshKey = (key, name) => {
 const runRsync = (sshKeyPath) => {
     rsync({ src: GITHUB_WORKSPACE || '.' + '/' + SOURCE || '' ,
         dest: TARGET || './dest',
-        args: ARGS || ['rltgoDzvO'],
+        args: [ARGS] || ['rltgoDzvO'],
         ssh: true,
         privateKey: sshKeyPath,
         recursive: true,
