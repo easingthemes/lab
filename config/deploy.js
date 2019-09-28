@@ -1,61 +1,102 @@
-const fs = require('fs');
-const path = require('path');
-const rsync = require('rsyncwrapper');
+#!/usr/bin/env node
+const nodeSsh = require('node-ssh');
+const nodeRsync = require('rsyncwrapper');
 
-const { DEPLOY_KEY, DEPLOY_KEY_NAME, ARGS, SOURCE, TARGET, GITHUB_WORKSPACE, HOME } = process.env;
+const { REMOTE_HOST, REMOTE_USER, DEPLOY_KEY, SOURCE, TARGET, ARGS, GITHUB_WORKSPACE, HOME } = process.env;
 console.log('GITHUB_WORKSPACE', GITHUB_WORKSPACE);
 
-const validateDir = (dir) => {
-    if (!fs.existsSync(dir)){
-        console.log('Creating `.ssh` dir in ', GITHUB_WORKSPACE);
-        fs.mkdirSync(dir);
-    }
+const sshDeploy = (() => {
+    const connect = async ({
+        host = "localhost",
+        username,
+        privateKey,
+        port = 22,
+        password,
+        passphrase
+    }) => {
+        const ssh = new nodeSsh();
+        console.log(`Establishing a SSH connection to ${host}.`);
 
-    console.log('`.ssh` dir exist');
-};
-
-const addSshKey = (key, name) => {
-    const sshDir = path.join(HOME || __dirname, '.ssh');
-    const filePath = path.join(sshDir, name);
-
-    validateDir(sshDir);
-
-    fs.writeFileSync(filePath, {
-        encoding: 'utf8',
-        mode: '0o600'
-    });
-
-    console.log('Ssh key added to `.ssh` dir ', filePath);
-
-    return filePath;
-};
-
-const runRsync = (sshKeyPath) => {
-    rsync({ src: GITHUB_WORKSPACE || '.' + '/' + SOURCE || '' ,
-        dest: TARGET || './dest',
-        args: [ARGS] || ['-rltgoDzvO'],
-        ssh: true,
-        privateKey: sshKeyPath,
-        recursive: true,
-    }, (error, stdout, stderr, cmd) => {
-        console.log('end', stderr, cmd);
-        if (error) {
-            // failed
-            console.log(error.message);
-            throw error;
-        } else {
-            console.log('success', stdout);
+        try {
+            await ssh.connect({
+                host,
+                username,
+                privateKey,
+                port,
+                password,
+                passphrase
+            });
+            console.log(`🤝 Connected to ${host}.`);
+        } catch (err) {
+            console.error(`⚠️ The GitHub Action couldn't connect to ${host}.`, err);
+            process.abort();
         }
-    });
-};
 
-const run = () => {
-    if (!DEPLOY_KEY) {
-        throw new Error('DEPLOY_KEY is mandatory');
+        return ssh;
+    };
+
+    const rsync = async ({ ssh, src, dest, args }) => {
+        console.log(`Starting Rsync Action: ${src} to ${dest}`);
+
+        try {
+            // RSYNC COMMAND
+            nodeRsync({ src, dest, args, ssh: true, recursive: true }, (error, stdout, stderr, cmd) => {
+                console.log('Rsync end', stderr, cmd);
+                if (error) {
+                    // failed
+                    console.log('Rsync error', error.message);
+                    throw error;
+                } else {
+                    console.log('Rsync successful', stdout);
+                }
+            });
+
+            ssh.dispose();
+            console.log("✅ Rsync Action finished.");
+        } catch (err) {
+            console.error(`⚠️ An error happened:(.`, err.message, err.stack);
+            ssh.dispose();
+            process.abort();
+        }
+    };
+
+    const init = async ({
+        src,
+        dest,
+        args,
+        host = 'localhost',
+        username,
+        privateKey,
+        port = 22,
+        password,
+        passphrase
+    }) => {
+        const ssh = await connect({
+            host,
+            username,
+            privateKey,
+            port,
+            password,
+            passphrase
+        });
+
+        const remoteDest = username + '@' + host + ':' + dest;
+
+        await rsync({ ssh, src, dest: remoteDest, args });
+
+        ssh.dispose();
+    };
+
+    return {
+        init
     }
+})();
 
-    const sshKeyPath = addSshKey(DEPLOY_KEY, DEPLOY_KEY_NAME ||'deployKey.pem');
-    runRsync(sshKeyPath);
-};
-
-run();
+sshDeploy.init({
+    src: GITHUB_WORKSPACE + '/' + SOURCE || '',
+    dest: TARGET || './dest',
+    args: [ARGS] || ['-rltgoDzvO'],
+    host: REMOTE_HOST,
+    username: REMOTE_USER,
+    privateKey: DEPLOY_KEY,
+});

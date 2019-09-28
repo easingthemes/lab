@@ -28,6 +28,6 @@ jobs:
       env:
         CI: true,
         DEPLOY_KEY: ${{ secrets.SERVER_SSH_KEY }}
-        ARGS: "-rltgoDzvO --delete"
+        ARGS: "-rltgoDzvO"
         SOURCE: "dist"
         TARGET: ${{ secrets.SERVER_STAGING }}
