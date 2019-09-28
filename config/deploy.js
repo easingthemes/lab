@@ -109,6 +109,8 @@ const sshDeploy = (() => {
                     }
                 }
             );
+        } else {
+            callback();
         }
     };
 
