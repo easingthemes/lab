@@ -28,7 +28,7 @@ jobs:
         mkdir "$SSH_PATH"
         echo "${SSH_PRIVATE_KEY}" > "$SSH_PATH/deploy_key"
         chmod 600 "$SSH_PATH/deploy_key"
-        rsync ${ARGS} -e 'ssh -i $SSH_PATH/deploy_key -o StrictHostKeyChecking=no' ${GITHUB_WORKSPACE}/${SOURCE} ${TARGET}"
+        rsync "${ARGS}" -e 'ssh -i $SSH_PATH/deploy_key -o StrictHostKeyChecking=no' "${GITHUB_WORKSPACE}"/"${SOURCE}" "${TARGET}"
       env:
         CI: true,
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
