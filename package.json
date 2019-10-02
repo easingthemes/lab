@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config ./config/webpack.config.js",
-    "serve": "http-server --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem",
-    "deploy": "node ./config/deploy.js"
+    "build": "npm run build:js && npm run build:css && npm run build:assets",
+    "build:js": "webpack --config ./config/webpack.config.js",
+    "build:css": "node-sass src/css/styles.scss dist/css/styles.min.css",
+    "build:assets": "copyfiles -u 1 src/*.html src/favicon.ico src/images/* dist",
+    "serve": "http-server --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,8 @@
   },
   "dependencies": {
     "command-exists": "^1.2.8",
-    "node-cmd": "^3.0.0"
+    "copyfiles": "^2.1.1",
+    "node-cmd": "^3.0.0",
+    "node-sass": "^4.12.0"
   }
 }
