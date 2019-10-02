@@ -29,5 +29,5 @@ jobs:
         CI: true,
         DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         ARGS: "-rltgoDzvO"
-        SOURCE: "dist"
+        SOURCE: "dist/"
         TARGET: ${{ secrets.SERVER_STAGING }}
