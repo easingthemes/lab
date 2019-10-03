@@ -1,7 +1,7 @@
 
 export function register() {
     if ('serviceWorker' in navigator) {
-        const swUrl = 'https://lab.frontenddot.com/sw/service-worker.js';
+        const swUrl = 'https://lab.frontenddot.com/service-worker.js';
         navigator.serviceWorker
              .register(swUrl)
              .then(registration => {
