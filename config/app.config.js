@@ -1,6 +1,7 @@
 const path = require('path');
-const envPublicUrl = process.env.PUBLIC_URL;
 const pkg = require('../package.json');
+
+const envPublicUrl = process.env.PUBLIC_URL;
 
 const config = {
     ROOT_REL: '..'

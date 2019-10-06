@@ -27,12 +27,10 @@ module.exports = {
     plugins: [
         new WorkboxWebpackPlugin.GenerateSW({
             clientsClaim: true,
+            skipWaiting: true,
             importWorkboxFrom: 'cdn',
-            navigateFallback: PUBLIC_URL + '/index-offline.html',
-            navigateFallbackBlacklist: [
-                new RegExp('^/_'),
-                new RegExp('/[^/]+\\.[^/]+$'),
-            ]
+            globDirectory: './dist/',
+            globPatterns: ['**/*.{png,ico,html,css}']
         })
     ]
 };

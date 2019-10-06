@@ -8,7 +8,8 @@
     "build:js": "webpack --config ./config/webpack.config.js",
     "build:css": "node-sass src/css/styles.scss dist/css/styles.min.css",
     "build:assets": "copyfiles -u 1 src/*.html src/favicon.ico src/images/* dist",
-    "serve": "http-server --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem"
+    "serve": "http-server ./dist/",
+    "serve:ssl": "http-server ./dist/ --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem"
   },
   "repository": {
     "type": "git",
