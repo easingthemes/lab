@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:js && npm run build:css && npm run build:assets",
+    "build": " npm run build:assets && npm run build:css && npm run build:js",
     "build:js": "webpack --config ./config/webpack.config.js",
     "build:css": "node-sass src/css/styles.scss dist/css/styles.min.css",
-    "build:assets": "copyfiles -u 1 src/*.html src/favicon.ico src/images/* dist",
+    "build:assets": "rsync -avh src/ dist/ --delete --exclude 'js' --exclude 'css'",
     "serve": "http-server ./dist/",
     "serve:ssl": "http-server ./dist/ --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem"
   },
