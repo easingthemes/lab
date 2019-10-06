@@ -13,5 +13,6 @@ module.exports = {
     ROOT_PATH: path.resolve(__dirname, config.ROOT_REL),
     PUBLIC_URL: envPublicUrl || pkg.homepage,
     REPO_URL: `https://github.com/${GITHUB_REPOSITORY}`,
-    DIST_DIR: 'dist'
+    DIST_DIR: 'dist',
+    SRC_DIR: 'src'
 };

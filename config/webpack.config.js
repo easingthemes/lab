@@ -1,10 +1,10 @@
 const path = require('path');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const { ROOT_PATH, PUBLIC_URL, DIST_DIR } = require('./app.config');
+const { ROOT_PATH, SRC_DIR, DIST_DIR } = require('./app.config');
 
 module.exports = {
     mode: 'production',
-    entry: `${ROOT_PATH}/src/js/app.js`,
+    entry: `${ROOT_PATH}/${SRC_DIR}/js/app.js`,
     output: {
         filename: 'js/app.min.js',
         path: path.resolve(ROOT_PATH, DIST_DIR)
@@ -25,11 +25,9 @@ module.exports = {
         ]
     },
     plugins: [
-        new WorkboxWebpackPlugin.GenerateSW({
-            clientsClaim: true,
-            skipWaiting: true,
-            importWorkboxFrom: 'cdn',
-            globDirectory: './dist/',
+        new WorkboxWebpackPlugin.InjectManifest({
+            swSrc: path.join(ROOT_PATH, SRC_DIR, 'service-worker.js'),
+            globDirectory: `./${DIST_DIR}/`,
             globPatterns: ['**/*.{png,ico,html,css}']
         })
     ]
