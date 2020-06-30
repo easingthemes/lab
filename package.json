@@ -9,7 +9,8 @@
     "build:css": "node-sass src/css/styles.scss dist/css/styles.min.css",
     "build:assets": "rsync -avh src/ dist/ --delete --exclude 'js' --exclude 'css'",
     "serve": "http-server ./dist/",
-    "serve:ssl": "http-server ./dist/ --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem"
+    "serve:ssl": "http-server ./dist/ --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem",
+    "github": "node tools/github.js"
   },
   "repository": {
     "type": "git",
@@ -31,5 +32,9 @@
     "webpack": "^4.40.2",
     "webpack-cli": "^3.3.9",
     "workbox-webpack-plugin": "^4.3.1"
+  },
+  "dependencies": {
+    "@octokit/rest": "^17.3.0",
+    "dotenv": "^8.2.0"
   }
 }
