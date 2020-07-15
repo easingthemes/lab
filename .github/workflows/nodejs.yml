@@ -5,9 +5,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        remote-host: ['frontenddot.com', 'frontenddot.com']
     steps:
     - uses: actions/checkout@v1
     - name: Check Node version
@@ -22,12 +19,21 @@ jobs:
       run: npm install
     - name: Run build task
       run: npm run build --if-present
-    - name: Deploy to Server
+    - name: Deploy to Staging
       uses: easingthemes/ssh-deploy@v2.1.4
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         ARGS: "-rltgoDzvO"
         SOURCE: "dist/"
-        REMOTE_HOST: ${{ matrix.remote-host }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}
+    - name: Deploy to Prod
+      uses: easingthemes/ssh-deploy@v2.1.4
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-rltgoDzvO"
+        SOURCE: "dist/"
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: ${{ secrets.REMOTE_TARGET }}
