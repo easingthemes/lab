@@ -6,7 +6,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        remote_host: [${{ secrets.REMOTE_HOST }}, ${{ secrets.REMOTE_HOST }}]
     steps:
     - uses: actions/checkout@v1
     - name: Check Node version
@@ -27,6 +29,6 @@ jobs:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         ARGS: "-rltgoDzvO"
         SOURCE: "dist/"
-        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_HOST: ${{ matrix.remote_host }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: ${{ secrets.REMOTE_TARGET }}
