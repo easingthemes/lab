@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        remote-host: [${{ secrets.REMOTE_HOST }}, ${{ secrets.REMOTE_HOST }}]
+        remote-host: ['test', 'test2']
     steps:
     - uses: actions/checkout@v1
     - name: Check Node version
