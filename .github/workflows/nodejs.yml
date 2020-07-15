@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        remote-host: ['test', 'test2']
+        remote-host: ['frontenddot.com', 'frontenddot.com']
     steps:
     - uses: actions/checkout@v1
     - name: Check Node version
