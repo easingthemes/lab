@@ -1,3 +1,3 @@
 # lab
-v2.1.6-rc.2
+v2.1.6
 Action test repo
