@@ -20,21 +20,12 @@ jobs:
     - name: Run build task
       run: npm run build --if-present
     - name: Deploy to Staging
-      uses: easingthemes/ssh-deploy@v2.1.6-rc.1
+      uses: easingthemes/ssh-deploy@v2.1.6-rc.2
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         ARGS: "-rltgoDzvO"
         SOURCE: "dist/"
-        EXCLUDE: "*/js/"
-        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-        REMOTE_USER: ${{ secrets.REMOTE_USER }}
-        TARGET: ${{ secrets.REMOTE_TARGET }}
-    - name: Deploy to Prod
-      uses: easingthemes/ssh-deploy@v2.1.4
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        ARGS: "-rltgoDzvO"
-        SOURCE: "dist/"
+        EXCLUDE: "/js/"
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: ${{ secrets.REMOTE_TARGET }}
