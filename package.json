@@ -10,7 +10,8 @@
     "build:assets": "rsync -avh src/ dist/ --delete --exclude 'js' --exclude 'css'",
     "serve": "http-server ./dist/",
     "serve:ssl": "http-server ./dist/ --ssl --cert ./ssl/cert.pem --key ./ssl/key.pem",
-    "github": "node tools/github.js"
+    "github": "node tools/github.js",
+    "ngrok": "node tools/ngrok.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,8 @@
   },
   "dependencies": {
     "@octokit/rest": "^17.3.0",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "ngrok": "^4.0.1",
+    "puppeteer": "^9.0.0"
   }
 }
